@@ -61,7 +61,7 @@
 (defun r-elem (a i j)
     (
         cond ((= i j) (get-norm (reduce (lambda (x y) (mapcar #'- x y)) (append (list (get-column a j)) (mapcar (lambda (x) (get-projection (get-column a j) x)) (q-cols a j))))))
-            ((< i j) (get-dot-product (get-column a j) (mapcar (lambda (y) (q-elem a (- y 1) i)) (create-list (length a)))))
+            ((< i j) (get-dot-product (get-column a j) (mapcar (lambda (y) (q-elem a (- y 1) i)) (create-list (length (car a))))))
             ((> i j) 0)
 
     ))

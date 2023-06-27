@@ -17,37 +17,16 @@
 
 (defun lu_j_rec (a elem i j len)
     (cond ((< j 0) nil)
-            ((>= j 0) (append (lu_j_rec a elem i (- j 1) len) (elem a i j)))
+            ((>= j 0) (append (lu_j_rec a elem i (- j 1) len) (list(funcall elem a i j))))
     ))
-
-;; (defun lu_j_rec (a l u i j len)
-;;     (cond ((>= j 0) (lu_j_rec a l u i (- j 1) len)
-;;         (cond ((<= i j)
-;;         (setf (nth j (nth i u)) (u-elem a i j)))
-;;                ((> i j)
-;;         (setf (nth j (nth i l)) (l-elem a i j)))))))
 
 (defun lu_i_rec (a elem i len)
-    (cond ((< i 0) nil)
-            ((>= i 0) (append (lu_i_rec a elem (- i 1) len) (lu_j_rec a elem i (- (length (car a)) 1) (- (length (car a)) 1))))
+    (cond
+            ((= i 0) (list (lu_j_rec a elem i (- (length (car a)) 1) (- (length (car a)) 1))))
+            ((> i 0) (append (lu_i_rec a elem (- i 1) len) (list (lu_j_rec a elem i (- (length (car a)) 1) (- (length (car a)) 1)))))
     ))
 
-;; (defun lu_i_rec (a l u i len)
-;;     (cond ((>= i 0)
-;;         (lu_i_rec a l u (- i 1) len)
-;;         (lu_j_rec a l u i (- (length (car a)) 1) (- (length (car a)) 1)))))
-
 (defun lu (a)
-    (list (lu_i_rec a #'l-elem (- (length a) 1) (- (length a) 1)) (lu_i_rec a #'u-elem (- (length a) 1) (- (length a) 1))))
-
-;; (defun lu (a l u)
-;;     (lu_i_rec a l u (- (length a) 1) (- (length a) 1)))
-
-;; (setf arrl '((1 0 0) (0 1 0) (0 0 1)))
-;; (setf arru '((0 0 0) (0 0 0) (0 0 0)))
-;; (print (lu '((10 -3 1) (4 5 0) (1 2 7)) arrl arru))
-;; (print arrl)
-;; (print arru)
-;; (print ())
+    (list (lu_i_rec a 'l-elem (- (length a) 1) (- (length a) 1)) (lu_i_rec a 'u-elem (- (length a) 1) (- (length a) 1))))
 
 (print (lu '((10 -3 1) (4 5 0) (1 2 7))))

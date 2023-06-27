@@ -18,11 +18,6 @@
         ((null (car matrix)) nil)
         (t (cons (cars matrix) (transpose (cdrs matrix))))))
 
-(defun set_list_to_list (l1 l2) 
-    (
-        mapcar (lambda (x y) (setf x y)) l1 l2
-    ))
-
 (defun get-row 
     (matr i)
     (nth i matr))

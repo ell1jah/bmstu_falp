@@ -18,6 +18,11 @@
         ((null (car matrix)) nil)
         (t (cons (cars matrix) (transpose (cdrs matrix))))))
 
+(defun create-list (n &optional (acc '()) (i 1))
+  (if (> i n)
+      (reverse acc)
+      (create-list n (cons i acc) (1+ i))))
+
 (defun get-row 
     (matr i)
     (nth i matr))
@@ -44,6 +49,32 @@
 (defun get-projection (arr1 arr2)
     (
         let ((dot (get-dot-product arr1 arr2)) (norm (get-norm arr2))) (mapcar (lambda (x) (* x (/ dot (* norm norm)))) arr2)
+    ))
+
+;; (defun r-elem (a i j)
+;;     (
+;;         cond ((= i j) (get-norm (reduce (lambda (x y) (mapcar #'- x y)) (append (list (get-column a j)) (mapcar (lambda (x) (get-projection (mapcar (lambda (x) (get-column a (- x 1))))) (create-list j)) x) )))))
+;;             ((or (< i j) (> i j)) ())
+
+;;     ))
+
+;; (get-projection (get-column a j) (q-elem i))
+
+(defun q-elem (a i j)
+    (
+        
+    ))
+
+(defun q-cols (a j)
+    (
+        mapcar (lambda (x) ((mapcar (lambda (y) (q-elem a (- y 1) (- x 1))) (create-list (length a))))) (create-list j)
+    ))
+
+(defun r-elem (a i j)
+    (
+        cond ((= i j) (get-norm (reduce (lambda (x y) (mapcar #'- x y)) (append (list (get-column a j)) (mapcar (lambda (x) (get-projection (get-column a j) x)) (q-cols a j))))))
+            ((or (< i j) (> i j)) (get-dot-product (get-column a j) (mapcar (lambda (y) (q-elem a (- y 1) i)) (create-list (length a)))))
+
     ))
 
 (defun qr_i_rec (a i j)

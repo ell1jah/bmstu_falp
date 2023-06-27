@@ -62,12 +62,12 @@
 
 (defun q-elem (a i j)
     (
-        
+        / (nth i (reduce (lambda (x y) (mapcar #'- x y)) (append (list (get-column a j)) (mapcar (lambda (x) (get-projection (get-column a j) x)) (q-cols a j))))) (r-elem a j j)
     ))
 
 (defun q-cols (a j)
     (
-        mapcar (lambda (x) ((mapcar (lambda (y) (q-elem a (- y 1) (- x 1))) (create-list (length a))))) (create-list j)
+        mapcar (lambda (x) (mapcar (lambda (y) (q-elem a (- y 1) (- x 1))) (create-list (length a)))) (create-list j)
     ))
 
 (defun r-elem (a i j)
@@ -77,35 +77,18 @@
 
     ))
 
-(defun qr_i_rec (a i j)
-    (
-        cond ((>= i 0) (qr_i_rec a (- i 1) j) (setf (nth j (nth i arrr)) (get-dot-product (get-column arrq j) (get-column arrq i))) (setf (nth j (setf arrq (transpose arrq))) (mapcar #'- (nth j arrq) (get-projection (nth j arrq) (nth i arrq)))) (setf arrq (transpose arrq)))
+(defun qr_j_rec (a elem i j len)
+    (cond ((< j 0) nil)
+            ((>= j 0) (append (qr_j_rec a elem i (- j 1) len) (list(funcall elem a i j))))
     ))
 
-(defun qr_j_rec (a j)
-    (
-        cond ((>= j 0) (qr_j_rec a (- j 1)) (progn (setf (nth j (setf arrq (transpose arrq))) (get-column a j)) (setf arrq (transpose arrq))) (qr_i_rec a (- j 1) j) (let ((norm (get-norm (get-column arrq j)))) (setf (nth j (setf arrq (transpose arrq))) (mapcar (lambda (x) (/ x norm)) (nth j arrq))) (setf arrq (transpose arrq)) (setf (nth j (nth j arrr)) norm)))
+(defun qr_i_rec (a elem i len)
+    (cond
+            ((= i 0) (list (qr_j_rec a elem i (- (length (car a)) 1) (- (length (car a)) 1))))
+            ((> i 0) (append (qr_i_rec a elem (- i 1) len) (list (qr_j_rec a elem i (- (length (car a)) 1) (- (length (car a)) 1)))))
     ))
 
 (defun qr (a)
-    (
-        qr_j_rec a (- (length (nth 1 a)) 1)
-    ))
+    (list (qr_i_rec a 'q-elem (- (length a) 1) (- (length a) 1)) (qr_i_rec a 'r-elem (- (length a) 1) (- (length a) 1))))
 
-(setf arrq '
-    (
-        (0 0 0) 
-        (0 0 0) 
-        (0 0 0)))
-(setf arrr '
-    (
-        (0 0 0) 
-        (0 0 0) 
-        (0 0 0)))
-(qr '
-        (
-            (10 -3 1) 
-            (4 5 2) 
-            (1 2 7)))
-(print arrq)
-(print arrr)
+(print (qr '((10 -3 1) (4 5 2) (1 2 7))))

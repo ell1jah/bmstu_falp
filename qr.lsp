@@ -1,19 +1,16 @@
 ;gnuclisp2.49.60
 
 (defun cars (matrix)
-  "Return a list with all the cars of the lists in matrix"
   (if (null matrix)
       nil
       (cons (car (car matrix)) (cars (cdr matrix)))))
 
 (defun cdrs (matrix)
-  "Return a list with all the cdrs of the lists in matrix"
   (if (null matrix)
       nil
       (cons (cdr (car matrix)) (cdrs (cdr matrix)))))
 
 (defun transpose (matrix)
-  "Transpose matrix"
   (cond ((null matrix) nil)
         ((null (car matrix)) nil)
         (t (cons (cars matrix) (transpose (cdrs matrix))))))
@@ -48,17 +45,8 @@
 
 (defun get-projection (arr1 arr2)
     (
-        let ((dot (get-dot-product arr1 arr2)) (norm (get-norm arr2))) (mapcar (lambda (x) (* x (/ dot (* norm norm)))) arr2)
+        mapcar (lambda (x) (* x (/ (get-dot-product arr1 arr2) (* (get-norm arr2) (get-norm arr2))))) arr2
     ))
-
-;; (defun r-elem (a i j)
-;;     (
-;;         cond ((= i j) (get-norm (reduce (lambda (x y) (mapcar #'- x y)) (append (list (get-column a j)) (mapcar (lambda (x) (get-projection (mapcar (lambda (x) (get-column a (- x 1))))) (create-list j)) x) )))))
-;;             ((or (< i j) (> i j)) ())
-
-;;     ))
-
-;; (get-projection (get-column a j) (q-elem i))
 
 (defun q-elem (a i j)
     (
